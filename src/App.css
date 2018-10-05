@@ -7,6 +7,13 @@
   height: 40vmin;
 }
 
+.container{
+
+  display:flex;
+  flex:1;
+  justifyContent:'center';alignItems:'center'
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
