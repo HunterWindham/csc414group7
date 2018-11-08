@@ -4,7 +4,7 @@ body {
     height: 100%;
     margin: 0;
     padding: 0;
-    background-color: #FFCC00;
+    /*background-color: #FFCC00;*/
 }
 
 html {
@@ -38,6 +38,12 @@ font-style: oblique;font-weight: 300;
     font-family: cursive;
 
 
+}
+
+#LoginForm{
+    display: flex;
+    flex-direction: column;
+    align-self: center;
 }
 
 #Register{

@@ -3,11 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.3.2",
+    "@material-ui/icons": "^3.0.1",
+    "cors": "^2.8.4",
     "material-ui": "^0.20.2",
     "material-ui-search-bar": "^0.4.2",
+    "mongodb": "^3.1.8",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "react-grid-gallery": "^0.5.3",
+    "react-images-upload": "^1.2.3",
     "react-scripts": "2.0.4",
     "react-window-size": "^1.2.2"
   },
