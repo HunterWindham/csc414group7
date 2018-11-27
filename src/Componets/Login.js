@@ -1,6 +1,8 @@
 import React
 from 'react';
 
+import PropTypes from 'prop-types';
+
 import classNames
 from 'classnames';
 
@@ -17,9 +19,14 @@ from '@material-ui/core/TextField';
 import Button
 from '@material-ui/core/Button';
 
+import Snackbar from '@material-ui/core/Snackbar';
+
+import { push } from 'react-router-redux'
+
+import getHistory from '../history'; 
 
 
-const url="http://localhost:3001/login";
+const url="http://131.95.36.117:3001/login";
 
 
 
@@ -73,7 +80,9 @@ constructor(props){
 super(props);
 this.state={
 email:'',
-password:''
+password:'',
+recordsnack:false,
+passwordsnack:false
 
 }
 
@@ -92,8 +101,23 @@ fetch(url, {
     }),
   })
   .then(response =>response.json())
-  .then((object)=>console.log(object));
-
+  .then((object)=>{
+	console.log(object);
+	if(object.success==-1)
+	{
+	this.setState({recordsnack:true})	
+	}
+	else if(object.success==0)
+	{
+ 	this.setState({passwordsnack:true})	
+	}
+	else if(object.success==1)
+	{
+		//Go inside Dashboard
+	getHistory().push({pathname:'/profile',state:{gId:object.gId}});
+		 
+	}
+	})
 
 
 
@@ -162,6 +186,28 @@ Login
 
 </Button>
 
+<Snackbar
+        className={this.props.classes.snackbar}
+	open={this.state.recordsnack}
+	onClose={()=>{
+	this.setState({recordsnack:false})
+	}}
+	autoHideDuration={3000}
+        message={
+          'Greek Life Organization Record not Found on our Systems'
+        }
+      />
+<Snackbar
+        className={this.props.classes.snackbar}
+	open={this.state.passwordsnack}
+	onClose={()=>{
+	this.setState({passwordsnack:false})
+	}}
+	autoHideDuration={3000}
+        message={
+          'Wrong email / password combination . Try again '
+        }
+      />
 
 
 </div>
@@ -172,4 +218,7 @@ Login
 
 }
 
-export default Login;
+Login.propTypes={
+  classes: PropTypes.object.isRequired,
+}
+export default withStyles(styles)(Login);

@@ -5,16 +5,6 @@ app.use(cors())
 var https = require('https');
 
 var fs = require('fs');
-var hskey = fs.readFileSync('key.pem');
-var hscert = fs.readFileSync('cert.pem')
-
-var options = {
-    key: hskey,
-    cert: hscert,
-    passphrase: 'password',
-    requestCert: false,
-	rejectUnauthorized: false
-}
 
 
 var bodyParser = require('body-parser')
@@ -38,11 +28,47 @@ res.send('Hello World!');
 
 app.post('/adminlogin',function(req,res)
 {
+
+console.log("Admin Login ")
 console.log(req.body.email)
 console.log(req.body.password)
 
+const collection=db.collection("admins");
+let query={"email":req.body.email}
+
+collection.find(query).toArray(function(err,docs)
+{
+
+//1st case
+if (docs.length==0)
+{
+res.json({"success":0})
+}
+else{
+user=docs[0]
+console.log(user["email"])
+console.log(user["password"])
+
+bcrypt.compare(req.body.password,user["password"],function(err,bres)
+{
+if(bres)
+{
+
+console.log("Password matched");
+res.json({"success":1})
+}else
+{
+console.log("Password didn't match");
+res.json({"success":0})
+}
+
+});
 
 
+
+
+}
+})
 })
 
 
@@ -266,30 +292,7 @@ const dbName = 'greeklife';
 
 let db={}
 
-//app.configure(function(){
-//	app.use(app.rou
-//});
 
-
-let PORT=3001;
-let HOST='localhost';
-
-var httpserver = https.createServer(options, app).listen(PORT,function(err,client){
-
-MongoClient.connect(url, function(err, client) {
-  console.log("Connected successfully to server");
-
-  db = client.db(dbName);
-
- // const collection=db.collection("apparels");
-
-
-});
-
-
-});
-
-/**
 var server=app.listen(3001,function() {
 
 
@@ -305,6 +308,3 @@ MongoClient.connect(url, function(err, client) {
 });
 
 })
-
-**/
-

@@ -7,6 +7,8 @@ import TextField from '@material-ui/core/TextField';
 import ImageUploader from 'react-images-upload';
 import Button from '@material-ui/core/Button';
 
+import getHistory from '../history';
+
 const url="http://131.95.36.117:3001/register";
 
 const styles = theme => ({
@@ -21,6 +23,12 @@ const styles = theme => ({
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
     width: 200,
+  },
+   descriptionField:{
+	marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 400,
+
   },
   dense: {
     marginTop: 19,
@@ -42,7 +50,8 @@ class TextFields extends React.Component {
         location: '',
         phoneNumber: '',
         email: '',
-        pass: ''
+        pass: '',
+	desc:''
       };
       this.onDrop = this.onDrop.bind(this);
       this.readFile=this.readFile.bind(this);
@@ -70,11 +79,14 @@ class TextFields extends React.Component {
       }),
     })
     .then(response =>response.json())
-    .then((object)=>console.log(object));
-
-
-  }
+    .then((object)=>{
+	//waitforit	
+	getHistory().push({pathname:'/waitforit'});
+	console.log(object);
+	})
   
+	}
+
   readFile(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -112,6 +124,9 @@ class TextFields extends React.Component {
 
     return (
       <div className= "formWrapper">
+	<div style={{marginTop:10,fontSize:30}} className={classes.container}>
+		<b>Register your Greek Life !! </b>
+	</div>
         <form className={classes.container} noValidate autoComplete="off">
           <TextField
             label="University"
@@ -155,9 +170,15 @@ class TextFields extends React.Component {
             margin="normal"
             onChange={(e)=>{this.setState({pass:e.target.value})}}
           />
+ 	<TextField 
+	label="Describe about your organization"
+	className={classes.descriptionField}
+	multiline
+          rowsMax="4"
+	onChange={(e)=>{this.setState({desc:e.target.value})}}/>
           <ImageUploader
                 withIcon={true}
-                buttonText='Choose images'
+                buttonText='Choose Logo for your Greek Life '
                 withPreview={true}
                 withLabel={false}
                 onChange={this.onDrop}

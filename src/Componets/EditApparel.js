@@ -7,8 +7,9 @@ import TextField from '@material-ui/core/TextField';
 import ImageUploader from 'react-images-upload';
 import Button from '@material-ui/core/Button';
 import getHistory from '../history';
-const url="http://131.95.36.117:3001/addApparel";
 
+const url="http://131.95.36.117:3001/editApparel";
+const getApparelInfourl="http://131.95.36.117:3001/getApparelInfo";
 
 const styles = theme => ({
   container: {
@@ -33,7 +34,6 @@ const styles = theme => ({
 class TextFields extends React.Component {
     constructor(props) {
       super(props);
-      console.log("Add apparel GId",props.location.state.gId)
       this.state = { 
         name:'',
         description: '',
@@ -43,11 +43,45 @@ class TextFields extends React.Component {
         mcount:0,
         lcount:0,
         xlcount:0,
-        greeklifeId:props.location.state.gId //Get it from the server  when we log in the system 
-      };
+        greeklifeId:'', //Get it from the server  when we log in the system ,
+	apparelId:props.location.state.appid, // Get it from The edit Icon redirect 
+      	imgUpdated:false
+	};
       this.onDrop = this.onDrop.bind(this);
       this.readFile=this.readFile.bind(this);
   }
+
+	componentDidMount(){
+	//Get the initial state 
+	let reqObject={appid:this.state.apparelId};
+	  fetch(getApparelInfourl, {
+      credentials: 'same-origin', // 'include', default: 'omit'
+      method: 'POST', // 'GET', 'PUT', 'DELETE', etc.
+      body: JSON.stringify(reqObject), // Coordinate the body type with 'Content-Type'
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+    })
+    .then(response =>response.json())
+    .then((object)=>{
+	
+	console.log("Apparel Info ",object);
+	this.setState(
+	{
+	name:object.data.name,
+	description:object.data.desc,
+	price:object.data.price,
+	scount:object.data.scount,
+	mcount:object.data.mcount,
+	lcount:object.data.lcount,
+	xlcount:object.data.xlcount,
+	base64logo:object.data.logo,
+	greeklifeId:object.data.gId
+	})	
+	})
+	}
+
+	
   add(){
     console.log(this.state.university,this.state.organization,this.state.location,this.state.phoneNumber,this.state.email,this.state.pass)
     let reqObject={
@@ -59,7 +93,8 @@ class TextFields extends React.Component {
       lcount:this.state.lcount,
       xlcount:this.state.xlcount,
       logo:this.state.base64logo,
-      greeklifeId:this.state.greeklifeId
+      greeklifeId:this.state.greeklifeId,
+      apparelid:this.state.apparelId
     }
     fetch(url, {
       credentials: 'same-origin', // 'include', default: 'omit'
@@ -71,10 +106,11 @@ class TextFields extends React.Component {
     })
     .then(response =>response.json())
     .then((object)=>{
-	console.log(object)
+	
+	console.log(object);
 	getHistory().push({pathname:'/profile',state:{gId:this.state.greeklifeId}});
-	});
-  }
+ 	})
+	 }
   
   readFile(file) {
     return new Promise((resolve, reject) => {
@@ -97,7 +133,7 @@ class TextFields extends React.Component {
   }
   onDrop(picture) {
       this.readFile(picture[0]).then(result=>{
-        this.setState({base64logo:result["dataURL"]})
+        this.setState({imgUpdated:true,base64logo:result["dataURL"]})
       }) 
   }
     handleChange = name => event => {
@@ -109,11 +145,12 @@ class TextFields extends React.Component {
     const { classes } = this.props;
     return (
         <div>
-            <center><h1>Add New Apparel </h1></center>
+            <center><h1>Edit Apparel </h1></center>
       <div className= "formWrapper">
         <form className={classes.container} noValidate autoComplete="off">
           <TextField
             label="Name"
+	    value={this.state.name}
             className={classes.textField}
             type="required"
             margin="normal"
@@ -121,6 +158,7 @@ class TextFields extends React.Component {
           />
           <TextField
             label="Description"
+	    value={this.state.description}
             className={classes.textField}
             type="required"
             margin="normal"
@@ -128,6 +166,7 @@ class TextFields extends React.Component {
           />
           <TextField
             label="Price (in $) "
+	    value={this.state.price}
             className={classes.textField}
             margin="normal"
             type="number"
@@ -137,6 +176,7 @@ class TextFields extends React.Component {
             <div id="stockCounts">
             <TextField
             label="S"
+	    value={this.state.scount}
             className={classes.textField}
             margin="normal"
             type="number"
@@ -145,6 +185,7 @@ class TextFields extends React.Component {
           />
           <TextField
             label="M"
+	    value={this.state.mcount}	
             className={classes.textField}
             margin="normal"
             type="number"
@@ -154,6 +195,7 @@ class TextFields extends React.Component {
           <TextField
             label="L"
             className={classes.textField}
+	    value={this.state.lcount}
             margin="normal"
             type="number"
             style={{width:50}}
@@ -161,6 +203,7 @@ class TextFields extends React.Component {
           />
           <TextField
             label="XL"
+	    value={this.state.xlcount}
             className={classes.textField}
             margin="normal"
             type="number"
@@ -168,9 +211,14 @@ class TextFields extends React.Component {
             onChange={(e)=>{this.setState({xlcount:e.target.value})}}
           />
             </div>
+	   {this.state.imgUpdated==0 &&
+	   <div id="previewImage">
+		<img src={this.state.base64logo} width={250} height={250} ></img>
+	   </div>
+		}
           <ImageUploader
                 withIcon={true}
-                buttonText='Choose images'
+                buttonText='Update Apparel Images'
                 withPreview={true}
                 withLabel={false}
                 onChange={this.onDrop}
@@ -181,7 +229,7 @@ class TextFields extends React.Component {
             variant="outlined"
             color="primary"
             onClick={() => {this.add()}}
-          >Add !</Button>
+          >Edit !</Button>
         </form>
       </div>
       </div>

@@ -40,21 +40,66 @@ font-style: oblique;font-weight: 300;
 
 }
 
+#listrow{
+display:flex;
+flex-direction:row;
+flex:1
+}
+
 #LoginForm{
     display: flex;
     flex-direction: column;
     align-self: center;
 }
+.imgbox{
+display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
 
+#listcol{
+display:flex;
+flex-direction:column;
+
+}
+
+#adminRoot{
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+}
+#mainroot{
+display:flex;
+flex-direction:column;
+align-items:center;
+}
+
+#infoCard{
+display:flex;
+flex-direction:column;
+}
+#waitroot{
+display:flex;
+flex:1;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+font-size:200%;
+}
 #Register{
 display:flex;
 justify-content:center;
     font-size: 200%;
 font-style: oblique;font-weight: 300;
     font-family: cursive;
-	text-decoration: underline;
 
 }
+#dashboardalign{
+align-self:center;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
